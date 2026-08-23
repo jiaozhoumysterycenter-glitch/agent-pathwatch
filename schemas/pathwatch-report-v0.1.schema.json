@@ -1,0 +1,459 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agent-pathwatch:report:v0.1",
+  "title": "Agent Pathwatch report v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "source",
+    "adapter",
+    "context_window",
+    "usage",
+    "activity",
+    "tools",
+    "errors",
+    "timeline",
+    "data_quality",
+    "privacy"
+  ],
+  "properties": {
+    "schema": { "const": "pathwatch.report/v0.1" },
+    "source": { "$ref": "#/$defs/source" },
+    "adapter": { "$ref": "#/$defs/adapter" },
+    "context_window": { "$ref": "#/$defs/contextWindow" },
+    "usage": { "$ref": "#/$defs/usage" },
+    "activity": { "$ref": "#/$defs/activity" },
+    "tools": { "$ref": "#/$defs/tools" },
+    "errors": { "$ref": "#/$defs/errors" },
+    "timeline": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": { "$ref": "#/$defs/timelineEvent" }
+    },
+    "data_quality": { "$ref": "#/$defs/dataQuality" },
+    "privacy": { "$ref": "#/$defs/privacy" }
+  },
+  "$defs": {
+    "nonNegativeInteger": { "type": "integer", "minimum": 0 },
+    "positiveInteger": { "type": "integer", "minimum": 1 },
+    "nullableNonNegativeInteger": {
+      "anyOf": [
+        { "$ref": "#/$defs/nonNegativeInteger" },
+        { "type": "null" }
+      ]
+    },
+    "nullablePositiveInteger": {
+      "anyOf": [
+        { "$ref": "#/$defs/positiveInteger" },
+        { "type": "null" }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "kind",
+        "bytes",
+        "lines",
+        "blank_lines",
+        "parseable_lines",
+        "invalid_lines",
+        "oversized_lines",
+        "path_emitted",
+        "filename_emitted",
+        "content_emitted"
+      ],
+      "properties": {
+        "label": { "const": "source-1" },
+        "kind": { "enum": ["regular-file", "stdin"] },
+        "bytes": { "$ref": "#/$defs/nonNegativeInteger" },
+        "lines": { "$ref": "#/$defs/nonNegativeInteger" },
+        "blank_lines": { "$ref": "#/$defs/nonNegativeInteger" },
+        "parseable_lines": { "$ref": "#/$defs/nonNegativeInteger" },
+        "invalid_lines": { "$ref": "#/$defs/nonNegativeInteger" },
+        "oversized_lines": { "$ref": "#/$defs/nonNegativeInteger" },
+        "path_emitted": { "const": false },
+        "filename_emitted": { "const": false },
+        "content_emitted": { "const": false }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "match_state",
+        "recognized_record_count",
+        "observed_format_support",
+        "official_schema_contract"
+      ],
+      "properties": {
+        "id": { "const": "codex-observed-v1" },
+        "version": { "const": "0.1.0" },
+        "match_state": { "enum": ["matched", "none"] },
+        "recognized_record_count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "observed_format_support": { "const": true },
+        "official_schema_contract": { "const": false }
+      }
+    },
+    "contextEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "first_line", "last_line", "rules"],
+      "properties": {
+        "count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "first_line": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "last_line": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "rules": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["event_msg.task_started", "event_msg.token_count"]
+          }
+        }
+      }
+    },
+    "contextWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "configured_tokens",
+        "state",
+        "observed_values",
+        "evidence",
+        "override_supplied"
+      ],
+      "properties": {
+        "configured_tokens": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "state": { "enum": ["observed", "override", "missing", "conflict"] },
+        "observed_values": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/positiveInteger" }
+        },
+        "evidence": { "$ref": "#/$defs/contextEvidence" },
+        "override_supplied": { "type": "boolean" }
+      }
+    },
+    "usageValues": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_tokens",
+        "cached_input_tokens",
+        "cache_write_input_tokens",
+        "output_tokens",
+        "reasoning_output_tokens",
+        "total_tokens"
+      ],
+      "properties": {
+        "input_tokens": { "$ref": "#/$defs/nullableNonNegativeInteger" },
+        "cached_input_tokens": { "$ref": "#/$defs/nullableNonNegativeInteger" },
+        "cache_write_input_tokens": { "$ref": "#/$defs/nullableNonNegativeInteger" },
+        "output_tokens": { "$ref": "#/$defs/nullableNonNegativeInteger" },
+        "reasoning_output_tokens": { "$ref": "#/$defs/nullableNonNegativeInteger" },
+        "total_tokens": { "$ref": "#/$defs/nullableNonNegativeInteger" }
+      }
+    },
+    "usageSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantics", "evidence_line", "values"],
+      "properties": {
+        "semantics": {
+          "enum": ["observed_last_snapshot", "observed_cumulative_snapshot"]
+        },
+        "evidence_line": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "values": { "$ref": "#/$defs/usageValues" }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "last_snapshot",
+        "cumulative_snapshot",
+        "last_snapshot_count",
+        "cumulative_snapshot_count",
+        "duplicate_cumulative_snapshot_count",
+        "cumulative_reset_count",
+        "price_estimated",
+        "billable_tokens_inferred"
+      ],
+      "properties": {
+        "last_snapshot": { "$ref": "#/$defs/usageSnapshot" },
+        "cumulative_snapshot": { "$ref": "#/$defs/usageSnapshot" },
+        "last_snapshot_count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "cumulative_snapshot_count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "duplicate_cumulative_snapshot_count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "cumulative_reset_count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "price_estimated": { "const": false },
+        "billable_tokens_inferred": { "const": false }
+      }
+    },
+    "recordCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_meta",
+        "turn_context",
+        "world_state",
+        "inter_agent_communication_metadata",
+        "event_msg",
+        "response_item",
+        "compacted"
+      ],
+      "properties": {
+        "session_meta": { "$ref": "#/$defs/nonNegativeInteger" },
+        "turn_context": { "$ref": "#/$defs/nonNegativeInteger" },
+        "world_state": { "$ref": "#/$defs/nonNegativeInteger" },
+        "inter_agent_communication_metadata": { "$ref": "#/$defs/nonNegativeInteger" },
+        "event_msg": { "$ref": "#/$defs/nonNegativeInteger" },
+        "response_item": { "$ref": "#/$defs/nonNegativeInteger" },
+        "compacted": { "$ref": "#/$defs/nonNegativeInteger" }
+      }
+    },
+    "roleHistogram": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "assistant": { "$ref": "#/$defs/positiveInteger" },
+        "developer": { "$ref": "#/$defs/positiveInteger" },
+        "other": { "$ref": "#/$defs/positiveInteger" },
+        "system": { "$ref": "#/$defs/positiveInteger" },
+        "tool": { "$ref": "#/$defs/positiveInteger" },
+        "user": { "$ref": "#/$defs/positiveInteger" }
+      }
+    },
+    "phaseHistogram": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "analysis": { "$ref": "#/$defs/positiveInteger" },
+        "commentary": { "$ref": "#/$defs/positiveInteger" },
+        "final": { "$ref": "#/$defs/positiveInteger" },
+        "none": { "$ref": "#/$defs/positiveInteger" },
+        "other": { "$ref": "#/$defs/positiveInteger" },
+        "summary": { "$ref": "#/$defs/positiveInteger" }
+      }
+    },
+    "messages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_messages",
+        "response_messages",
+        "cross_agent_messages",
+        "by_role",
+        "by_phase"
+      ],
+      "properties": {
+        "event_messages": { "$ref": "#/$defs/nonNegativeInteger" },
+        "response_messages": { "$ref": "#/$defs/nonNegativeInteger" },
+        "cross_agent_messages": { "$ref": "#/$defs/nonNegativeInteger" },
+        "by_role": { "$ref": "#/$defs/roleHistogram" },
+        "by_phase": { "$ref": "#/$defs/phaseHistogram" }
+      }
+    },
+    "activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_counts",
+        "messages",
+        "reasoning_records",
+        "content_blocks",
+        "unknown_content_blocks",
+        "task_started",
+        "task_completed",
+        "turn_aborted",
+        "context_compacted",
+        "thread_rolled_back",
+        "thread_settings_applied",
+        "world_state_records",
+        "inter_agent_records"
+      ],
+      "properties": {
+        "record_counts": { "$ref": "#/$defs/recordCounts" },
+        "messages": { "$ref": "#/$defs/messages" },
+        "reasoning_records": { "$ref": "#/$defs/nonNegativeInteger" },
+        "content_blocks": { "$ref": "#/$defs/nonNegativeInteger" },
+        "unknown_content_blocks": { "$ref": "#/$defs/nonNegativeInteger" },
+        "task_started": { "$ref": "#/$defs/nonNegativeInteger" },
+        "task_completed": { "$ref": "#/$defs/nonNegativeInteger" },
+        "turn_aborted": { "$ref": "#/$defs/nonNegativeInteger" },
+        "context_compacted": { "$ref": "#/$defs/nonNegativeInteger" },
+        "thread_rolled_back": { "$ref": "#/$defs/nonNegativeInteger" },
+        "thread_settings_applied": { "$ref": "#/$defs/nonNegativeInteger" },
+        "world_state_records": { "$ref": "#/$defs/nonNegativeInteger" },
+        "inter_agent_records": { "$ref": "#/$defs/nonNegativeInteger" }
+      }
+    },
+    "toolStatusHistogram": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cancelled": { "$ref": "#/$defs/positiveInteger" },
+        "completed": { "$ref": "#/$defs/positiveInteger" },
+        "failed": { "$ref": "#/$defs/positiveInteger" },
+        "in_progress": { "$ref": "#/$defs/positiveInteger" },
+        "started": { "$ref": "#/$defs/positiveInteger" },
+        "unknown": { "$ref": "#/$defs/positiveInteger" }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "started",
+        "outputs_observed",
+        "paired_calls",
+        "orphaned_calls",
+        "orphaned_outputs",
+        "duplicate_correlation_ids",
+        "end_signals_observed",
+        "status_histogram",
+        "names_emitted",
+        "arguments_emitted",
+        "results_emitted"
+      ],
+      "properties": {
+        "kind": { "const": "opaque_custom_tool" },
+        "started": { "$ref": "#/$defs/nonNegativeInteger" },
+        "outputs_observed": { "$ref": "#/$defs/nonNegativeInteger" },
+        "paired_calls": { "$ref": "#/$defs/nonNegativeInteger" },
+        "orphaned_calls": { "$ref": "#/$defs/nonNegativeInteger" },
+        "orphaned_outputs": { "$ref": "#/$defs/nonNegativeInteger" },
+        "duplicate_correlation_ids": { "$ref": "#/$defs/nonNegativeInteger" },
+        "end_signals_observed": { "$ref": "#/$defs/nonNegativeInteger" },
+        "status_histogram": { "$ref": "#/$defs/toolStatusHistogram" },
+        "names_emitted": { "const": false },
+        "arguments_emitted": { "const": false },
+        "results_emitted": { "const": false }
+      }
+    },
+    "errors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["activity", "count", "raw_text_emitted"],
+      "properties": {
+        "activity": { "type": "boolean" },
+        "count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "raw_text_emitted": { "const": false }
+      }
+    },
+    "timelineEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "line", "kind", "offset_seconds"],
+      "properties": {
+        "sequence": { "$ref": "#/$defs/positiveInteger" },
+        "line": { "$ref": "#/$defs/positiveInteger" },
+        "kind": {
+          "enum": [
+            "compacted_snapshot",
+            "context_compacted",
+            "cross_agent_message",
+            "error_activity",
+            "event_message",
+            "reasoning",
+            "response_message",
+            "stream_error",
+            "task_complete",
+            "task_started",
+            "thread_rolled_back",
+            "token_snapshot",
+            "tool_end_signal",
+            "tool_error",
+            "tool_output",
+            "tool_start",
+            "turn_aborted",
+            "web_search_end"
+          ]
+        },
+        "offset_seconds": {
+          "anyOf": [{ "type": "integer" }, { "type": "null" }]
+        },
+        "role": { "enum": ["assistant", "developer", "other", "system", "tool", "user"] },
+        "phase": { "enum": ["analysis", "commentary", "final", "none", "other", "summary"] },
+        "status": {
+          "enum": [
+            "cancelled",
+            "completed",
+            "end_signal_observed",
+            "failed",
+            "in_progress",
+            "output_observed",
+            "started",
+            "unknown"
+          ]
+        },
+        "tool_ordinal": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "context_window": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "last_total_tokens": { "$ref": "#/$defs/nullableNonNegativeInteger" },
+        "cumulative_total_tokens": { "$ref": "#/$defs/nullableNonNegativeInteger" }
+      }
+    },
+    "unknownCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wrappers", "subtypes", "content_blocks", "timeline_events_dropped"],
+      "properties": {
+        "wrappers": { "$ref": "#/$defs/nonNegativeInteger" },
+        "subtypes": { "$ref": "#/$defs/nonNegativeInteger" },
+        "content_blocks": { "$ref": "#/$defs/nonNegativeInteger" },
+        "timeline_events_dropped": { "$ref": "#/$defs/nonNegativeInteger" }
+      }
+    },
+    "qualityIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "line", "count", "detail_safe"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[a-z0-9_]+$", "maxLength": 80 },
+        "severity": { "enum": ["info", "warning", "error"] },
+        "line": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "count": { "$ref": "#/$defs/positiveInteger" },
+        "detail_safe": { "type": "string", "maxLength": 240 }
+      }
+    },
+    "dataQuality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "issue_count", "issues", "unknown_counts"],
+      "properties": {
+        "status": { "enum": ["complete", "partial", "unusable"] },
+        "issue_count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "issues": {
+          "type": "array",
+          "maxItems": 257,
+          "items": { "$ref": "#/$defs/qualityIssue" }
+        },
+        "unknown_counts": { "$ref": "#/$defs/unknownCounts" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "explicit_input_only",
+        "network_access",
+        "telemetry",
+        "cache_written",
+        "raw_values_passthrough"
+      ],
+      "properties": {
+        "explicit_input_only": { "const": true },
+        "network_access": { "const": false },
+        "telemetry": { "const": false },
+        "cache_written": { "const": false },
+        "raw_values_passthrough": { "const": false }
+      }
+    }
+  }
+}

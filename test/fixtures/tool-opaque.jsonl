@@ -1,0 +1,11 @@
+{"timestamp":"2026-02-01T00:00:00.000Z","type":"session_meta","payload":{"cli_version":"0.0.synthetic"}}
+{"timestamp":"2026-02-01T00:00:01.000Z","type":"response_item","payload":{"id":"synthetic-call-item","call_id":"synthetic-call-1","type":"custom_tool_call","name":"PATHWATCH_NEVER_EMIT_TOOL_NAME","status":"started","input":"{\"secret\":\"PATHWATCH_NEVER_EMIT_TOOL_INPUT\"}"}}
+{"timestamp":"2026-02-01T00:00:02.000Z","type":"response_item","payload":{"id":"synthetic-output-item","call_id":"synthetic-call-1","type":"custom_tool_call_output","output":[{"type":"output_text","text":"PATHWATCH_NEVER_EMIT_TOOL_OUTPUT"}]}}
+{"timestamp":"2026-02-01T00:00:03.000Z","type":"response_item","payload":{"id":"synthetic-orphan-output","call_id":"synthetic-call-2","type":"custom_tool_call_output","output":[{"type":"output_text","text":"PATHWATCH_NEVER_EMIT_ORPHAN_OUTPUT"}]}}
+{"timestamp":"2026-02-01T00:00:04.000Z","type":"event_msg","payload":{"type":"future_error_event","message":"PATHWATCH_NEVER_EMIT_RAW_ERROR","stack":"PATHWATCH_NEVER_EMIT_STACK"}}
+{"timestamp":"2026-02-01T00:00:05.000Z","type":"response_item","payload":{"type":"message","role":"assistant","phase":"commentary","content":[{"type":"future_private_block","text":"PATHWATCH_NEVER_EMIT_UNKNOWN_BLOCK"}]}}
+{"timestamp":"2026-02-01T00:00:06.000Z","type":"response_item","payload":{"id":"synthetic-function-item","call_id":"synthetic-call-3","type":"function_call","name":"PATHWATCH_NEVER_EMIT_FUNCTION_NAME","arguments":"{\"secret\":\"PATHWATCH_NEVER_EMIT_FUNCTION_ARGUMENTS\"}"}}
+{"timestamp":"2026-02-01T00:00:07.000Z","type":"event_msg","payload":{"type":"mcp_tool_call_end","call_id":"synthetic-call-3","result":"PATHWATCH_NEVER_EMIT_END_RESULT"}}
+{"timestamp":"2026-02-01T00:00:08.000Z","type":"response_item","payload":{"id":"synthetic-function-output","call_id":"synthetic-call-3","type":"function_call_output","output":"PATHWATCH_NEVER_EMIT_FUNCTION_OUTPUT"}}
+{"timestamp":"2026-02-01T00:00:09.000Z","type":"event_msg","payload":{"type":"user_message","message":"PATHWATCH_NEVER_EMIT_EVENT_USER_MESSAGE","images":["PATHWATCH_NEVER_EMIT_IMAGE"]}}
+{"timestamp":"2026-02-01T00:00:10.000Z","type":"compacted","payload":{"message":"PATHWATCH_NEVER_EMIT_COMPACTED_MESSAGE","replacement_history":["PATHWATCH_NEVER_EMIT_HISTORY"]}}

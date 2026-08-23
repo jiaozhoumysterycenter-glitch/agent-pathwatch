@@ -1,0 +1,46 @@
+{
+  "name": "agent-pathwatch",
+  "version": "0.1.0",
+  "description": "Offline, content-silent diagnostics for agent session JSONL files.",
+  "type": "module",
+  "bin": {
+    "agent-pathwatch": "./src/cli.mjs"
+  },
+  "files": [
+    "src/",
+    "schemas/",
+    "docs/",
+    "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "PRIVACY.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "demo": "node src/cli.mjs inspect test/fixtures/minimal-lifecycle.jsonl",
+    "demo:json": "node src/cli.mjs inspect test/fixtures/minimal-lifecycle.jsonl --format json",
+    "check": "node --check src/cli.mjs && node --check src/analyze.mjs && node --check src/adapters/codex-observed-v1.mjs && node --check src/io.mjs && node --check src/render.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "agent",
+    "jsonl",
+    "privacy",
+    "diagnostics",
+    "tokens",
+    "codex"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiaozhoumysterycenter-glitch/agent-pathwatch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jiaozhoumysterycenter-glitch/agent-pathwatch/issues"
+  },
+  "homepage": "https://github.com/jiaozhoumysterycenter-glitch/agent-pathwatch#readme",
+  "license": "MIT"
+}
