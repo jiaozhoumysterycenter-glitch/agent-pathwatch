@@ -11,13 +11,13 @@ Before the first public release:
       `.github/workflows/test.yml` is a root workflow.
 - [x] Choose the public GitHub owner/repository name, then add real
       `repository`, `bugs`, and `homepage` URLs to `package.json`.
-- [ ] Enable GitHub private vulnerability reporting and replace the provisional
+- [x] Enable GitHub private vulnerability reporting and replace the provisional
       wording in `SECURITY.md` with the repository's direct private-advisory URL.
-- [ ] Run the workflow successfully on Node 20/22/24 Linux, Node 20 macOS, and
+- [x] Run the workflow successfully on Node 20/22/24 Linux, Node 20 macOS, and
       Node 20 Windows.
-- [ ] Re-run `npm run check`, `npm test`, and `npm pack --dry-run` from the
+- [x] Re-run `npm run check`, `npm test`, and `npm pack --dry-run` from the
       independent repository root.
-- [ ] Inspect the tarball file list and installed `.bin/agent-pathwatch`.
+- [x] Inspect the tarball file list and installed `.bin/agent-pathwatch`.
 - [ ] Change the changelog heading from `Unreleased` to the actual release date,
       create the signed/tagged release, and only then consider npm publication.
 

@@ -1,5 +1,7 @@
 # Agent Pathwatch
 
+[![test](https://github.com/jiaozhoumysterycenter-glitch/agent-pathwatch/actions/workflows/test.yml/badge.svg)](https://github.com/jiaozhoumysterycenter-glitch/agent-pathwatch/actions/workflows/test.yml)
+
 Agent Pathwatch is a small, offline CLI for inspecting the *shape* of an agent
 session JSONL file without emitting its conversation content.
 
