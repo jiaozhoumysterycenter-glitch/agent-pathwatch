@@ -18,7 +18,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/*.test.mjs",
+    "test": "node --test test/analyze.test.mjs test/cli.test.mjs test/offline-source.test.mjs test/schema.test.mjs",
     "demo": "node src/cli.mjs inspect test/fixtures/minimal-lifecycle.jsonl",
     "demo:json": "node src/cli.mjs inspect test/fixtures/minimal-lifecycle.jsonl --format json",
     "check": "node --check src/cli.mjs && node --check src/analyze.mjs && node --check src/adapters/codex-observed-v1.mjs && node --check src/io.mjs && node --check src/render.mjs"
