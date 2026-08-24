@@ -73,6 +73,29 @@ test('tool payloads remain opaque while relationships are counted', async () => 
   assert.equal(rendered.includes('synthetic-call'), false);
 });
 
+test('patch completion is an opaque tool-end signal, not format drift', async () => {
+  const input = [
+    '{"timestamp":"2026-02-02T00:00:00.000Z","type":"session_meta","payload":{}}',
+    '{"timestamp":"2026-02-02T00:00:01.000Z","type":"response_item","payload":{"type":"function_call","call_id":"patch-call","name":"PATHWATCH_NEVER_EMIT_PATCH_NAME","arguments":"PATHWATCH_NEVER_EMIT_PATCH_ARGUMENTS"}}',
+    '{"timestamp":"2026-02-02T00:00:02.000Z","type":"event_msg","payload":{"type":"patch_apply_end","call_id":"patch-call","success":true,"status":"completed","changes":["PATHWATCH_NEVER_EMIT_PATCH_CHANGE"],"stdout":"PATHWATCH_NEVER_EMIT_PATCH_STDOUT","stderr":"PATHWATCH_NEVER_EMIT_PATCH_STDERR"}}',
+    '{"timestamp":"2026-02-02T00:00:03.000Z","type":"response_item","payload":{"type":"function_call_output","call_id":"patch-call","output":"PATHWATCH_NEVER_EMIT_PATCH_OUTPUT"}}',
+  ].join('\n');
+  const report = await analyzeReadable(Readable.from([input]), { sourceKind: 'stdin' });
+
+  assert.equal(report.tools.started, 1);
+  assert.equal(report.tools.paired_calls, 1);
+  assert.equal(report.tools.end_signals_observed, 1);
+  assert.equal(report.data_quality.unknown_counts.subtypes, 0);
+  assert.equal(report.data_quality.status, 'complete');
+  const endSignal = report.timeline.find((event) => event.kind === 'tool_end_signal');
+  assert.equal(endSignal.status, 'end_signal_observed');
+  assert.equal(endSignal.tool_ordinal, 1);
+
+  const rendered = `${renderJson(report)}\n${renderMarkdown(report)}`;
+  assert.equal(rendered.includes(NEVER_EMIT), false);
+  assert.equal(rendered.includes('patch-call'), false);
+});
+
 test('future and malformed records stay explicit without stopping the scan', async () => {
   const report = await analyzeFixture('forward-error-tolerance.jsonl');
 

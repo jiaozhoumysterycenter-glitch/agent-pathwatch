@@ -2,6 +2,11 @@
 
 All notable changes to Agent Pathwatch will be documented here.
 
+## Unreleased
+
+- Recognize observed `patch_apply_end` events as opaque tool-end signals while
+  continuing to discard patch changes, stdout, stderr, IDs, and status text.
+
 ## 0.1.0 - 2026-08-23
 
 - Add an explicit-file/stdin-only offline CLI.

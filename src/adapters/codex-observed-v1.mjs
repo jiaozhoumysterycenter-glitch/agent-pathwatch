@@ -556,6 +556,10 @@ export function createCodexObservedAdapter({ addIssue, contextWindowOverride = n
         observeToolEndSignal(payload, line, timestampMs, 'tool_end_signal');
         break;
       }
+      case 'patch_apply_end': {
+        observeToolEndSignal(payload, line, timestampMs, 'tool_end_signal');
+        break;
+      }
       case 'web_search_end': {
         observeToolEndSignal(payload, line, timestampMs, 'web_search_end');
         break;
