@@ -10,6 +10,7 @@
     "src/",
     "schemas/",
     "docs/",
+    "examples/",
     "README.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md",

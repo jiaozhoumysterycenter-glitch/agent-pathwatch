@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a possible data leak privately
+    url: https://github.com/jiaozhoumysterycenter-glitch/agent-pathwatch/security/advisories/new
+    about: Never put a real session, credential, path, or private report in a public issue.

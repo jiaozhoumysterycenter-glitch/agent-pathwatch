@@ -2,7 +2,7 @@
 
 All notable changes to Agent Pathwatch will be documented here.
 
-## 0.1.0 - Unreleased
+## 0.1.0 - 2026-08-23
 
 - Add an explicit-file/stdin-only offline CLI.
 - Add the content-silent `codex-observed-v1` adapter.
@@ -13,3 +13,6 @@ All notable changes to Agent Pathwatch will be documented here.
 - Refuse symlink/non-regular input and existing output files.
 - Add synthetic privacy-canary, malformed-input, deterministic-output, file
   permission, no-match, strict-mode, and network-surface tests.
+- Add a generated synthetic example report and content-free GitHub issue forms.
+- Verify the test and package workflow on Linux Node 20/22/24, macOS Node 20,
+  and Windows Node 20.

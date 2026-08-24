@@ -1,0 +1,44 @@
+name: Observed format drift
+description: Propose support for a changed record shape without disclosing a real session.
+title: "[format-drift] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report wrapper, subtype, and key names only. Never paste original field values.
+        A fully synthetic minimal fixture is required before a new extraction rule can be accepted.
+  - type: input
+    id: wrapper
+    attributes:
+      label: Top-level wrapper type
+      placeholder: response_item
+    validations:
+      required: true
+  - type: input
+    id: subtype
+    attributes:
+      label: Payload subtype, if present
+      placeholder: future_call
+  - type: textarea
+    id: keys
+    attributes:
+      label: Observed key names and JSON types
+      description: Names and types only; replace all values with synthetic placeholders.
+      placeholder: "call_id: string\nstatus: string\noutput: array"
+    validations:
+      required: true
+  - type: textarea
+    id: synthetic-fixture
+    attributes:
+      label: Synthetic minimal JSONL
+      description: Use invented IDs, fixed canaries, and no copied real content.
+      render: json
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy-check
+    attributes:
+      label: Public-data check
+      options:
+        - label: This report contains no source values copied from a real session.
+          required: true

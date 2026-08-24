@@ -38,6 +38,21 @@ process with the same privileges, swap, or a core dump. See [PRIVACY.md](PRIVACY
 
 Requires Node.js 20 or later and has no package dependencies.
 
+Try the complete public fixture in about a minute:
+
+```bash
+git clone https://github.com/jiaozhoumysterycenter-glitch/agent-pathwatch.git
+cd agent-pathwatch
+npm ci --ignore-scripts
+npm test
+node src/cli.mjs inspect test/fixtures/minimal-lifecycle.jsonl
+```
+
+The expected content-silent output is committed at
+[examples/minimal-report.md](examples/minimal-report.md).
+
+Inspect your own explicit file only when you choose to:
+
 ```bash
 node src/cli.mjs inspect /path/to/session.jsonl
 node src/cli.mjs inspect /path/to/session.jsonl --format json
@@ -116,7 +131,9 @@ npm run demo
 ```
 
 All committed fixtures are synthetic. Do not open an issue containing a real
-session file. This project is not affiliated with or endorsed by OpenAI.
+session file. Use the repository's issue forms; they are designed to accept
+content-free diagnostics and synthetic reproductions. This project is not
+affiliated with or endorsed by OpenAI.
 
 ## Status
 
