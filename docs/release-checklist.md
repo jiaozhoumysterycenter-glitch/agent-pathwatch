@@ -18,8 +18,11 @@ Before the first public release:
 - [x] Re-run `npm run check`, `npm test`, and `npm pack --dry-run` from the
       independent repository root.
 - [x] Inspect the tarball file list and installed `.bin/agent-pathwatch`.
-- [ ] Change the changelog heading from `Unreleased` to the actual release date,
-      create the signed/tagged release, and only then consider npm publication.
+- [x] Change the `0.1.0` changelog heading to the actual release date and create
+      the tagged GitHub release.
+- [ ] Before any npm publication from post-tag `main`, choose a new version,
+      update `package.json` and the changelog, and repeat the package inspection.
 
 Repository creation and the first source push are complete. Enabling GitHub
-security settings, tags, and npm publication remain explicit external actions.
+security settings and the `v0.1.0` tag/release are complete. npm publication
+remains an explicit external action.
