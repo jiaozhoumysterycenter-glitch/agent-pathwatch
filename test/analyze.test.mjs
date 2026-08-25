@@ -114,6 +114,27 @@ test('future and malformed records stay explicit without stopping the scan', asy
   assert.equal(rendered.includes(NEVER_EMIT), false);
 });
 
+test('unknown subtype groups are counted without emitting their names', async () => {
+  const input = [
+    '{"timestamp":"2026-04-02T00:00:00.000Z","type":"session_meta","payload":{}}',
+    '{"timestamp":"2026-04-02T00:00:01.000Z","type":"event_msg","payload":{"type":"PATHWATCH_NEVER_EMIT_EVENT_ALPHA","secret":"PATHWATCH_NEVER_EMIT"}}',
+    '{"timestamp":"2026-04-02T00:00:02.000Z","type":"event_msg","payload":{"type":"PATHWATCH_NEVER_EMIT_EVENT_ALPHA","secret":"PATHWATCH_NEVER_EMIT"}}',
+    '{"timestamp":"2026-04-02T00:00:03.000Z","type":"event_msg","payload":{"type":"PATHWATCH_NEVER_EMIT_EVENT_BETA","secret":"PATHWATCH_NEVER_EMIT"}}',
+    '{"timestamp":"2026-04-02T00:00:04.000Z","type":"response_item","payload":{"type":"PATHWATCH_NEVER_EMIT_RESPONSE_ALPHA","secret":"PATHWATCH_NEVER_EMIT"}}',
+  ].join('\n');
+  const report = await analyzeReadable(Readable.from([input]), { sourceKind: 'stdin' });
+
+  assert.equal(report.data_quality.unknown_counts.subtypes, 4);
+  assert.equal(report.data_quality.unknown_counts.event_subtype_groups, 2);
+  assert.equal(report.data_quality.unknown_counts.response_subtype_groups, 1);
+  assert.equal(report.data_quality.status, 'partial');
+
+  const rendered = `${renderJson(report)}\n${renderMarkdown(report)}`;
+  assert.equal(rendered.includes(NEVER_EMIT), false);
+  assert.equal(rendered.includes('EVENT_ALPHA'), false);
+  assert.equal(rendered.includes('RESPONSE_ALPHA'), false);
+});
+
 test('an explicit context override is recorded and never inferred from a model name', async () => {
   const report = await analyzeFixture('minimal-lifecycle.jsonl', {
     contextWindowOverride: 200000,

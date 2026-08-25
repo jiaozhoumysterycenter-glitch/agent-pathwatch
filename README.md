@@ -137,10 +137,10 @@ affiliated with or endorsed by OpenAI.
 
 ## Status
 
-`0.1.0` is an early, intentionally narrow implementation. It accepts a single
+`0.1.0` is an early, intentionally narrow tagged release. It accepts a single
 JSONL input and provides one built-in adapter. Directory discovery, content
 export, arbitrary plugins, pricing, and causal diagnosis are out of scope.
 
-The code is maintained as a standalone public repository, but `0.1.0` has not
-yet been tagged or published to npm. The remaining release checks are recorded
-in [docs/release-checklist.md](docs/release-checklist.md).
+The code is maintained as a standalone public repository. `0.1.0` is available
+as a GitHub release but has not been published to npm; changes after the tag are
+recorded under `Unreleased` in [CHANGELOG.md](CHANGELOG.md).

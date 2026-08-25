@@ -167,6 +167,7 @@ export function renderMarkdown(report) {
     '## Data quality',
     '',
     `Status: \`${report.data_quality.status}\`; issues: ${report.data_quality.issue_count}.`,
+    `Unknown subtypes: ${report.data_quality.unknown_counts.subtypes} records across ${report.data_quality.unknown_counts.event_subtype_groups} event groups and ${report.data_quality.unknown_counts.response_subtype_groups} response groups; names were not emitted.`,
     '',
     '| Severity | Code | Line | Count | Safe detail |',
     '| --- | --- | ---: | ---: | --- |',

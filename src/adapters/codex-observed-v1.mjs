@@ -111,6 +111,8 @@ export function createCodexObservedAdapter({ addIssue, contextWindowOverride = n
   let unknownWrapperCount = 0;
   let unknownSubtypeCount = 0;
   let unknownContentBlockCount = 0;
+  const unknownEventSubtypeDigests = new Set();
+  const unknownResponseSubtypeDigests = new Set();
   let contentBlockCount = 0;
   let eventMessageCount = 0;
   let responseMessageCount = 0;
@@ -175,6 +177,17 @@ export function createCodexObservedAdapter({ addIssue, contextWindowOverride = n
       timestampMs,
       ...detail,
     });
+  }
+
+  function observeUnknownSubtype(wrapper, subtype) {
+    unknownSubtypeCount += 1;
+    const raw = typeof subtype === 'string' ? subtype : '<missing>';
+    const digest = createHash('sha256').update(`${wrapper}\u0000${raw}`, 'utf8').digest('hex');
+    if (wrapper === 'event_msg') {
+      unknownEventSubtypeDigests.add(digest);
+    } else if (wrapper === 'response_item') {
+      unknownResponseSubtypeDigests.add(digest);
+    }
   }
 
   function addContextValue(value, line, rule) {
@@ -469,7 +482,7 @@ export function createCodexObservedAdapter({ addIssue, contextWindowOverride = n
 
   function consumeEventMessage(payload, line, timestampMs) {
     if (!isObject(payload) || typeof payload.type !== 'string') {
-      unknownSubtypeCount += 1;
+      observeUnknownSubtype('event_msg', null);
       addIssue(
         'missing_event_subtype',
         'warning',
@@ -579,7 +592,7 @@ export function createCodexObservedAdapter({ addIssue, contextWindowOverride = n
         break;
       }
       default: {
-        unknownSubtypeCount += 1;
+        observeUnknownSubtype('event_msg', payload.type);
         if (looksErrorShaped(payload, payload.type)) {
           recordErrorActivity(line, timestampMs);
         }
@@ -589,7 +602,7 @@ export function createCodexObservedAdapter({ addIssue, contextWindowOverride = n
 
   function consumeResponseItem(payload, line, timestampMs) {
     if (!isObject(payload) || typeof payload.type !== 'string') {
-      unknownSubtypeCount += 1;
+      observeUnknownSubtype('response_item', null);
       addIssue(
         'missing_response_subtype',
         'warning',
@@ -641,7 +654,7 @@ export function createCodexObservedAdapter({ addIssue, contextWindowOverride = n
         break;
       }
       default: {
-        unknownSubtypeCount += 1;
+        observeUnknownSubtype('response_item', payload.type);
         if (looksErrorShaped(payload, payload.type)) {
           recordErrorActivity(line, timestampMs);
         }
@@ -839,6 +852,8 @@ export function createCodexObservedAdapter({ addIssue, contextWindowOverride = n
       unknown_counts: {
         wrappers: unknownWrapperCount,
         subtypes: unknownSubtypeCount,
+        event_subtype_groups: unknownEventSubtypeDigests.size,
+        response_subtype_groups: unknownResponseSubtypeDigests.size,
         content_blocks: unknownContentBlockCount,
         timeline_events_dropped: timelineDropped,
       },

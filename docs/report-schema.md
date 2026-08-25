@@ -14,6 +14,8 @@ top-level sections:
 - `errors`: boolean/count error activity without raw text.
 - `timeline`: record-order events with relative, rounded time offsets.
 - `data_quality`: explicit issue codes, coverage, and unknown-record counts.
+  Unknown subtype names remain private; separate event/response distinct-group
+  counts show whether many unknown records share one shape or several.
 
 Missing numeric values are `null`, never zero. Original timestamps are not
 exported. Timeline offsets are relative to the first exported safe timeline

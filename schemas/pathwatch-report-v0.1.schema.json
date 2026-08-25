@@ -406,6 +406,8 @@
       "properties": {
         "wrappers": { "$ref": "#/$defs/nonNegativeInteger" },
         "subtypes": { "$ref": "#/$defs/nonNegativeInteger" },
+        "event_subtype_groups": { "$ref": "#/$defs/nonNegativeInteger" },
+        "response_subtype_groups": { "$ref": "#/$defs/nonNegativeInteger" },
         "content_blocks": { "$ref": "#/$defs/nonNegativeInteger" },
         "timeline_events_dropped": { "$ref": "#/$defs/nonNegativeInteger" }
       }
