@@ -36,6 +36,67 @@ test('CLI JSON output is deterministic and does not expose the source path', () 
   assert.equal(JSON.parse(first.stdout).schema, 'pathwatch.report/v0.1');
 });
 
+test('--no-timeline keeps the canonical report while recording the explicit omission', () => {
+  const baseline = run(['inspect', MINIMAL, '--format', 'json']);
+  const result = run(['inspect', MINIMAL, '--format', 'json', '--no-timeline']);
+
+  assert.equal(baseline.status, 0, baseline.stderr);
+  assert.equal(result.status, 0, result.stderr);
+  const baselineReport = JSON.parse(baseline.stdout);
+  const report = JSON.parse(result.stdout);
+  assert.equal(report.schema, 'pathwatch.report/v0.1');
+  assert.deepEqual(report.timeline, []);
+  assert.equal(
+    report.data_quality.unknown_counts.timeline_events_dropped,
+    baselineReport.timeline.length +
+      baselineReport.data_quality.unknown_counts.timeline_events_dropped,
+  );
+  assert.ok(
+    report.data_quality.issues.some(
+      (issue) =>
+        issue.code === 'timeline_omitted_by_request' &&
+        issue.count === 1,
+    ),
+  );
+  assert.equal(report.data_quality.status, 'partial');
+  assert.equal(result.stdout.includes(NEVER_EMIT), false);
+  assert.equal(result.stderr, '');
+});
+
+test('--no-timeline records the request even when there are no safe events', () => {
+  const input = '{"timestamp":"2026-01-01T00:00:00.000Z","type":"session_meta","payload":{}}\n';
+  const result = run(['inspect', '-', '--format', 'json', '--no-timeline'], { input });
+  assert.equal(result.status, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  assert.deepEqual(report.timeline, []);
+  assert.equal(report.data_quality.unknown_counts.timeline_events_dropped, 0);
+  assert.ok(
+    report.data_quality.issues.some(
+      (issue) => issue.code === 'timeline_omitted_by_request' && issue.count === 1,
+    ),
+  );
+  assert.equal(result.stdout.includes(NEVER_EMIT), false);
+  assert.equal(result.stderr, '');
+});
+
+test('--no-timeline remains visible to strict mode', () => {
+  const result = run([
+    'inspect',
+    MINIMAL,
+    '--format',
+    'json',
+    '--no-timeline',
+    '--strict',
+  ]);
+  assert.equal(result.status, 4);
+  const report = JSON.parse(result.stdout);
+  assert.deepEqual(report.timeline, []);
+  assert.ok(
+    report.data_quality.issues.some((issue) => issue.code === 'timeline_omitted_by_request'),
+  );
+  assert.equal(result.stderr, '');
+});
+
 test('strict mode returns 4 after writing a partial report', () => {
   const result = run(['inspect', TOOL_OPAQUE, '--format', 'json', '--strict']);
   assert.equal(result.status, 4);

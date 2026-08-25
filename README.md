@@ -80,7 +80,7 @@ mode `0600` where the platform supports POSIX permissions.
 ```text
 agent-pathwatch inspect <FILE|-> [--format markdown|json]
   [--output <PATH|->] [--adapter auto|codex-observed-v1]
-  [--context-window <TOKENS>] [--strict]
+  [--context-window <TOKENS>] [--no-timeline] [--strict]
 
 agent-pathwatch adapters [--format markdown|json]
 agent-pathwatch version
@@ -92,6 +92,11 @@ Pathwatch never guesses a context window from a model name.
 
 `--strict` returns exit code 4 when any data-quality issue is present. Without
 it, a usable partial report still returns 0 and lists its issues.
+
+`--no-timeline` keeps the canonical report and all counters but emits an empty
+timeline. The number of omitted safe events is added to
+`timeline_events_dropped`, and an explicit `timeline_omitted_by_request` issue
+keeps the projection visible to readers and `--strict`.
 
 Exit codes:
 

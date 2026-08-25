@@ -22,5 +22,10 @@ exported. Timeline offsets are relative to the first exported safe timeline
 event with a valid timestamp and rounded to whole seconds; source record order
 is preserved even when timestamps move backwards.
 
+When `--no-timeline` is supplied, the canonical `timeline` array is empty and
+the omitted safe-event count is accumulated in
+`data_quality.unknown_counts.timeline_events_dropped`. The report also carries
+the content-silent `timeline_omitted_by_request` quality issue.
+
 The machine-readable shape is in
 [`schemas/pathwatch-report-v0.1.schema.json`](../schemas/pathwatch-report-v0.1.schema.json).

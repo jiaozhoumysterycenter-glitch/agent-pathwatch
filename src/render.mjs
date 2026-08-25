@@ -168,6 +168,7 @@ export function renderMarkdown(report) {
     '',
     `Status: \`${report.data_quality.status}\`; issues: ${report.data_quality.issue_count}.`,
     `Unknown subtypes: ${report.data_quality.unknown_counts.subtypes} records across ${report.data_quality.unknown_counts.event_subtype_groups} event groups and ${report.data_quality.unknown_counts.response_subtype_groups} response groups; names were not emitted.`,
+    `Safe timeline events emitted: ${report.timeline.length}; not emitted: ${report.data_quality.unknown_counts.timeline_events_dropped}.`,
     '',
     '| Severity | Code | Line | Count | Safe detail |',
     '| --- | --- | ---: | ---: | --- |',

@@ -8,6 +8,8 @@ All notable changes to Agent Pathwatch will be documented here.
   continuing to discard patch changes, stdout, stderr, IDs, and status text.
 - Count distinct unknown event/response subtype groups without emitting subtype
   names or retaining them in the report.
+- Add `--no-timeline` for an explicit canonical-report projection that records
+  how many safe timeline events were omitted.
 
 ## 0.1.0 - 2026-08-23
 

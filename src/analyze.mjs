@@ -306,6 +306,7 @@ export async function analyzeReadable(
   {
     adapterId = 'auto',
     contextWindowOverride = null,
+    omitTimeline = false,
     sourceKind = 'regular-file',
     sourceBytes = null,
   } = {},
@@ -319,6 +320,14 @@ export async function analyzeReadable(
   }
 
   const issueCollector = createIssueCollector();
+  if (omitTimeline) {
+    issueCollector.add(
+      'timeline_omitted_by_request',
+      'info',
+      null,
+      'Safe timeline events were omitted by explicit CLI request.',
+    );
+  }
   const adapter = createCodexObservedAdapter({
     addIssue: issueCollector.add,
     contextWindowOverride,
@@ -426,6 +435,7 @@ export async function analyzeReadable(
   }
 
   const adapterResult = adapter.finish();
+  const omittedTimelineEvents = omitTimeline ? adapterResult.timeline.length : 0;
   if (
     adapterResult.unknown_counts.wrappers > 0 ||
     adapterResult.unknown_counts.subtypes > 0 ||
@@ -460,12 +470,16 @@ export async function analyzeReadable(
     activity: adapterResult.activity,
     tools: adapterResult.tools,
     errors: adapterResult.errors,
-    timeline: adapterResult.timeline,
+    timeline: omitTimeline ? [] : adapterResult.timeline,
     data_quality: {
       status: 'complete',
       issue_count: 0,
       issues: issueCollector.list(),
-      unknown_counts: adapterResult.unknown_counts,
+      unknown_counts: {
+        ...adapterResult.unknown_counts,
+        timeline_events_dropped:
+          adapterResult.unknown_counts.timeline_events_dropped + omittedTimelineEvents,
+      },
     },
     privacy: {
       explicit_input_only: true,

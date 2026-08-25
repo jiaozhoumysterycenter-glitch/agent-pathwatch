@@ -333,3 +333,21 @@ test('post-read issues remain inside the bounded schema issue list', async () =>
   ).count;
   assert.equal(after, before + 1);
 });
+
+test('timeline omission provenance survives a saturated issue list', async () => {
+  const input = Array.from({ length: 300 }, () =>
+    '{"type":"session_meta","payload":{"secret":"PATHWATCH_NEVER_EMIT_SATURATED"}}',
+  ).join('\n');
+  const report = await analyzeReadable(Readable.from([input]), {
+    sourceKind: 'stdin',
+    omitTimeline: true,
+  });
+
+  assert.deepEqual(report.timeline, []);
+  assert.equal(report.data_quality.unknown_counts.timeline_events_dropped, 0);
+  assert.ok(
+    report.data_quality.issues.some((issue) => issue.code === 'timeline_omitted_by_request'),
+  );
+  assert.ok(report.data_quality.issues.some((issue) => issue.code === 'issue_list_truncated'));
+  assert.equal(renderJson(report).includes(NEVER_EMIT), false);
+});

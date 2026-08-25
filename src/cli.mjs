@@ -16,7 +16,7 @@ const HELP = `Agent Pathwatch ${VERSION}
 Usage:
   agent-pathwatch inspect <FILE|-> [--format markdown|json]
     [--output <PATH|->] [--adapter auto|codex-observed-v1]
-    [--context-window <TOKENS>] [--strict]
+    [--context-window <TOKENS>] [--no-timeline] [--strict]
 
   agent-pathwatch adapters [--format markdown|json]
   agent-pathwatch version
@@ -68,6 +68,7 @@ function parseCli(argv) {
         format: { type: 'string', default: 'markdown' },
         help: { type: 'boolean', short: 'h' },
         output: { type: 'string', short: 'o', default: '-' },
+        'no-timeline': { type: 'boolean', default: false },
         strict: { type: 'boolean', default: false },
         version: { type: 'boolean', short: 'v' },
       },
@@ -91,6 +92,7 @@ async function inspectCommand(source, values) {
     report = await analyzeReadable(input.stream, {
       adapterId: values.adapter,
       contextWindowOverride,
+      omitTimeline: values['no-timeline'],
       sourceKind: input.kind,
       sourceBytes: input.size,
     });

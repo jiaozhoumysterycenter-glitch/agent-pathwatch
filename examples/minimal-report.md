@@ -117,6 +117,8 @@ Observed: no; count: 0; raw text emitted: no.
 ## Data quality
 
 Status: `complete`; issues: 0.
+Unknown subtypes: 0 records across 0 event groups and 0 response groups; names were not emitted.
+Safe timeline events emitted: 6; not emitted: 0.
 
 | Severity | Code | Line | Count | Safe detail |
 | --- | --- | ---: | ---: | --- |
